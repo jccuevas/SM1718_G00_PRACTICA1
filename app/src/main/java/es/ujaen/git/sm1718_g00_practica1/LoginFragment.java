@@ -2,6 +2,7 @@ package es.ujaen.git.sm1718_g00_practica1;
 
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -36,8 +37,8 @@ public class LoginFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
+     * @param ip Parameter 1.
+     * @param port Parameter 2.
      * @return A new instance of fragment LoginFragment.
      */
     // TODO: Rename and change types and number of parameters
@@ -89,17 +90,50 @@ public class LoginFragment extends Fragment {
                 );
                 Toast.makeText(getContext(), "Hola " + s_user + " " + s_pass + " " + s_ip + ":" + s_port, Toast.LENGTH_LONG).show();
 
-                Intent nueva = new Intent(getActivity(), ServiceActivity.class);
-                nueva.putExtra(ServiceActivity.PARAM_USER,data.getUser());
-                nueva.putExtra("param_pass",data.getPass());
-                nueva.putExtra("param_ip",data.getConnectionIP());
-                nueva.putExtra("param_port",data.getConnectionPort());
-                startActivity(nueva);
+                TareaAutentica tarea = new TareaAutentica();
+                tarea.execute(data);
+
+//                Intent nueva = new Intent(getActivity(), ServiceActivity.class);
+//                nueva.putExtra(ServiceActivity.PARAM_USER,data.getUser());
+//                nueva.putExtra("param_pass",data.getPass());
+//                nueva.putExtra("param_ip",data.getConnectionIP());
+//                nueva.putExtra("param_port",data.getConnectionPort());
+//                startActivity(nueva);
             }
         });
-
 
         return fragment;
     }
 
+    public class TareaAutentica extends AsyncTask<ConnectionUserData,Integer,String> {
+        private ConnectionUserData data;
+        public String doInBackground(ConnectionUserData... param){
+            if(param!=null)
+                if(param.length>=1)
+                    data=param[0];
+            //TODO proceso de autenticación
+            return "OK";
+        }
+
+        /**
+         *
+         * @param result OK si la operación fue correcta y si no otor valor
+         */
+        public void onPostExecute(String result){
+
+            if(result.compareToIgnoreCase("OK")==0) {
+                Intent nueva = new Intent(getActivity(), ServiceActivity.class);
+                nueva.putExtra(ServiceActivity.PARAM_USER, data.getUser());
+                nueva.putExtra("param_pass", data.getPass());
+                nueva.putExtra("param_ip", data.getConnectionIP());
+                nueva.putExtra("param_port", data.getConnectionPort());
+                startActivity(nueva);
+            }else
+            {
+                Toast.makeText(getContext(), "Error autenticando a " +data.getUser(), Toast.LENGTH_LONG).show();
+
+            }
+        }
+
+    }
 }
