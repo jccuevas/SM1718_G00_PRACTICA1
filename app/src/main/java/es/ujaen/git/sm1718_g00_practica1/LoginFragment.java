@@ -79,7 +79,7 @@ public class LoginFragment extends Fragment {
                 String s_pass = pass.getText().toString();
                 String s_ip = ip.getText().toString();
                 String s_port = port.getText().toString();
-                short port2 = 0;
+                short port2;
                 try {
                     port2 = Short.parseShort(s_port);
                 } catch (java.lang.NumberFormatException ex) {
@@ -90,50 +90,17 @@ public class LoginFragment extends Fragment {
                 );
                 Toast.makeText(getContext(), "Hola " + s_user + " " + s_pass + " " + s_ip + ":" + s_port, Toast.LENGTH_LONG).show();
 
-                TareaAutentica tarea = new TareaAutentica();
-                tarea.execute(data);
-
-//                Intent nueva = new Intent(getActivity(), ServiceActivity.class);
-//                nueva.putExtra(ServiceActivity.PARAM_USER,data.getUser());
-//                nueva.putExtra("param_pass",data.getPass());
-//                nueva.putExtra("param_ip",data.getConnectionIP());
-//                nueva.putExtra("param_port",data.getConnectionPort());
-//                startActivity(nueva);
+                Intent nueva = new Intent(getActivity(), ServiceActivity.class);
+                nueva.putExtra(ServiceActivity.PARAM_USER,data.getUser());
+                nueva.putExtra("param_pass",data.getPass());
+                nueva.putExtra("param_ip",data.getConnectionIP());
+                nueva.putExtra("param_port",data.getConnectionPort());
+                startActivity(nueva);
             }
         });
 
         return fragment;
     }
 
-    public class TareaAutentica extends AsyncTask<ConnectionUserData,Integer,String> {
-        private ConnectionUserData data;
-        public String doInBackground(ConnectionUserData... param){
-            if(param!=null)
-                if(param.length>=1)
-                    data=param[0];
-            //TODO proceso de autenticación
-            return "OK";
-        }
 
-        /**
-         *
-         * @param result OK si la operación fue correcta y si no otor valor
-         */
-        public void onPostExecute(String result){
-
-            if(result.compareToIgnoreCase("OK")==0) {
-                Intent nueva = new Intent(getActivity(), ServiceActivity.class);
-                nueva.putExtra(ServiceActivity.PARAM_USER, data.getUser());
-                nueva.putExtra("param_pass", data.getPass());
-                nueva.putExtra("param_ip", data.getConnectionIP());
-                nueva.putExtra("param_port", data.getConnectionPort());
-                startActivity(nueva);
-            }else
-            {
-                Toast.makeText(getContext(), "Error autenticando a " +data.getUser(), Toast.LENGTH_LONG).show();
-
-            }
-        }
-
-    }
 }
